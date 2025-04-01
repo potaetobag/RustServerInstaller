@@ -94,6 +94,7 @@ try {
 
     @"
 @echo off
+title RustServerInstance
 :start
 "$steamcmdDir\steamcmd.exe" +force_install_dir "$rustDir" +login anonymous +app_update 258550 +quit
 cd /d "$rustDir"
