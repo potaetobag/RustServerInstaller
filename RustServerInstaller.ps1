@@ -90,7 +90,8 @@ if ($oxideInstall -eq "Yes") {
 # === Opening required Rust server ports in Windows Defender Firewall ===
 $ports = @(
     @{ Name = "Rust Game Port"; Port = 28015 },
-    @{ Name = "Rust RCON Port"; Port = 28016 }
+    @{ Name = "Rust RCON Port"; Port = 28016 },
+    @{ Name = "Rust Server Queries"; Port = 28017 }
 )
 
 foreach ($entry in $ports) {
