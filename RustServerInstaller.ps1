@@ -99,12 +99,22 @@ foreach ($entry in $ports) {
     $port = $entry.Port
 
     # Inbound TCP
-    New-NetFirewallRule -DisplayName "$name (TCP)" -Direction Inbound -Protocol TCP -LocalPort $port -Action Allow -Profile Any -ErrorAction SilentlyContinue
+    $tcpRuleName = "$name (TCP)"
+    if (-not (Get-NetFirewallRule -DisplayName $tcpRuleName -ErrorAction SilentlyContinue)) {
+        New-NetFirewallRule -DisplayName $tcpRuleName -Direction Inbound -Protocol TCP -LocalPort $port -Action Allow -Profile Any -ErrorAction SilentlyContinue
+        Write-Host "✅ Opened $tcpRuleName"
+    } else {
+        Write-Host "ℹ️ Rule already exists: $tcpRuleName"
+    }
 
     # Inbound UDP
-    New-NetFirewallRule -DisplayName "$name (UDP)" -Direction Inbound -Protocol UDP -LocalPort $port -Action Allow -Profile Any -ErrorAction SilentlyContinue
-
-    Write-Host "✅ Opened $name on TCP/UDP port $port"
+    $udpRuleName = "$name (UDP)"
+    if (-not (Get-NetFirewallRule -DisplayName $udpRuleName -ErrorAction SilentlyContinue)) {
+        New-NetFirewallRule -DisplayName $udpRuleName -Direction Inbound -Protocol UDP -LocalPort $port -Action Allow -Profile Any -ErrorAction SilentlyContinue
+        Write-Host "✅ Opened $udpRuleName"
+    } else {
+        Write-Host "ℹ️ Rule already exists: $udpRuleName"
+    }
 }
 
 # === Create RustServer.bat ===
