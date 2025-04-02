@@ -117,6 +117,36 @@ foreach ($entry in $ports) {
     }
 }
 
+# === Installing Visual C++ 2022 Redistributables (x64 and x86) ===
+# Paths for download
+$tempDir = "$env:TEMP\vc_redist"
+mkdir $tempDir -Force | Out-Null
+
+# URLs for Visual C++ 2022 Redistributables
+$x64Url = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+$x86Url = "https://aka.ms/vs/17/release/vc_redist.x86.exe"
+
+# Local file paths
+$x64Installer = "$tempDir\vc_redist.x64.exe"
+$x86Installer = "$tempDir\vc_redist.x86.exe"
+
+# Download installers
+Write-Host "📥 Downloading Visual C++ 2022 x64..." -ForegroundColor Cyan
+Invoke-WebRequest -Uri $x64Url -OutFile $x64Installer -UseBasicParsing
+
+Write-Host "📥 Downloading Visual C++ 2022 x86..." -ForegroundColor Cyan
+Invoke-WebRequest -Uri $x86Url -OutFile $x86Installer -UseBasicParsing
+
+# Install silently
+Write-Host "🛠 Installing Visual C++ 2022 x64..." -ForegroundColor Yellow
+Start-Process -FilePath $x64Installer -ArgumentList "/quiet", "/norestart" -Wait
+
+Write-Host "🛠 Installing Visual C++ 2022 x86..." -ForegroundColor Yellow
+Start-Process -FilePath $x86Installer -ArgumentList "/quiet", "/norestart" -Wait
+
+Write-Host "✅ Visual C++ 2022 Redistributables installed." -ForegroundColor Green
+
+
 # === Create RustServer.bat ===
 try {
     $batPath = Join-Path $rustDir "RustServer.bat"
