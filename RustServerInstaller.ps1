@@ -87,6 +87,25 @@ if ($oxideInstall -eq "Yes") {
     }
 }
 
+# === Opening required Rust server ports in Windows Defender Firewall ===
+$ports = @(
+    @{ Name = "Rust Game Port"; Port = 28015 },
+    @{ Name = "Rust RCON Port"; Port = 28016 }
+)
+
+foreach ($entry in $ports) {
+    $name = $entry.Name
+    $port = $entry.Port
+
+    # Inbound TCP
+    New-NetFirewallRule -DisplayName "$name (TCP)" -Direction Inbound -Protocol TCP -LocalPort $port -Action Allow -Profile Any -ErrorAction SilentlyContinue
+
+    # Inbound UDP
+    New-NetFirewallRule -DisplayName "$name (UDP)" -Direction Inbound -Protocol UDP -LocalPort $port -Action Allow -Profile Any -ErrorAction SilentlyContinue
+
+    Write-Host "✅ Opened $name on TCP/UDP port $port"
+}
+
 # === Create RustServer.bat ===
 try {
     $batPath = Join-Path $rustDir "RustServer.bat"
